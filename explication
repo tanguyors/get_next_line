@@ -1,0 +1,56 @@
+Ce code est une implémentation de la fonction `get_next_line` en C. Cette fonction est utilisée pour lire un fichier ligne par ligne.
+
+Voici une explication détaillée de chaque fonction :
+
+1. `_fill_line_buffer` : Cette fonction lit le contenu d'un fichier et le stocke dans un tampon. Si un caractère de nouvelle ligne est trouvé ou si la fin du fichier est atteinte, la lecture s'arrête. Si une erreur de lecture se produit, la fonction libère la mémoire allouée et retourne NULL. Le reste de la ligne précédente (si disponible) est ajouté au début du tampon.
+
+2. `_set_line` : Cette fonction traite le tampon de ligne qui contient les données lues du fichier et prépare la prochaine ligne à être retournée par `get_next_line`. Elle trouve l'index du premier caractère de nouvelle ligne ou de fin de chaîne, crée une sous-chaîne à partir de cet index, et ajoute un caractère de fin de chaîne à la fin de la ligne.
+
+3. `get_next_line` : C'est la fonction principale. Elle alloue de la mémoire pour le tampon, vérifie si le descripteur de fichier est valide et si la taille du tampon est correcte. Ensuite, elle appelle `_fill_line_buffer` pour remplir le tampon de ligne et `_set_line` pour préparer la prochaine ligne à retourner.
+
+4. `ft_strchr` : Cette fonction est utilisée pour trouver un caractère spécifique dans une chaîne de caractères. Elle est utilisée dans `_fill_line_buffer` pour vérifier si un caractère de nouvelle ligne est présent dans le tampon.
+
+L'objectif de ce code est de lire un fichier ligne par ligne de manière efficace, en évitant de lire tout le fichier en mémoire à la fois. C'est particulièrement utile pour lire de grands fichiers ou des flux de données en temps réel.
+
+
+
+
+LEFT_C.
+`left_c` est utilisé pour stocker le "reste" d'une ligne lorsque `get_next_line` lit plus de données qu'il n'en faut pour une seule ligne. 
+
+Par exemple, supposons que votre fichier contienne le texte suivant :
+
+```
+Ligne 1
+Ligne 2
+Ligne 3
+```
+
+Et que votre `BUFFER_SIZE` soit de 10 caractères. Lors du premier appel à `get_next_line`, la fonction lira "Ligne 1\nLigne" dans le tampon. Elle retournera "Ligne 1" et stockera "Ligne" dans `left_c`.
+
+Lors du prochain appel à `get_next_line`, la fonction commencera par vérifier s'il y a des données dans `left_c`. Comme "Ligne" y est stocké, elle lira la suite du fichier et ajoutera ces données à `left_c`, obtenant "Ligne 2\nLigne 3". Elle retournera ensuite "Ligne 2" et stockera "Ligne 3" dans `left_c` pour le prochain appel.
+
+C'est ainsi que `get_next_line` gère les situations où une ligne est plus longue que la taille du tampon, ou lorsque plusieurs lignes sont lues dans le tampon en une seule fois.
+
+
+
+
+READ.
+La fonction `read` est une fonction de la bibliothèque standard de C pour lire des données à partir d'un fichier ou d'un autre type de flux de données. Elle est définie dans le fichier d'en-tête `<unistd.h>`.
+
+Voici comment elle fonctionne :
+
+```c
+ssize_t read(int fd, void *buf, size_t count);
+```
+
+- `fd` : C'est le descripteur de fichier à partir duquel lire. Il s'agit généralement d'un fichier ouvert avec la fonction `open`, mais cela peut aussi être un socket ou un autre type de flux de données.
+
+- `buf` : C'est le tampon dans lequel les données lues seront stockées. Il doit être suffisamment grand pour contenir `count` octets.
+
+- `count` : C'est le nombre d'octets à lire à partir du fichier.
+
+La fonction `read` retourne le nombre d'octets réellement lus. En cas d'erreur, elle retourne -1.
+
+Dans votre code, `read(fd, buffer, BUFFER_SIZE);` lit `BUFFER_SIZE` octets à partir du fichier désigné par `fd` et les stocke dans le tampon `buffer`.
+
