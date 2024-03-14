@@ -54,3 +54,23 @@ La fonction `read` retourne le nombre d'octets réellement lus. En cas d'erreur,
 
 Dans votre code, `read(fd, buffer, BUFFER_SIZE);` lit `BUFFER_SIZE` octets à partir du fichier désigné par `fd` et les stocke dans le tampon `buffer`.
 
+
+
+
+SET_LINE.
+La fonction `_set_line` est utilisée pour extraire une ligne complète (jusqu'au caractère de nouvelle ligne ou à la fin de la chaîne) du tampon de ligne `line_buffer` et préparer le reste de la chaîne pour le prochain appel de `get_next_line`.
+
+Prenons un exemple pour illustrer son fonctionnement. Supposons que `line_buffer` contient la chaîne "Bonjour\nMonde\n". Voici comment `_set_line` traiterait cette chaîne :
+
+1. Elle initialise `i` à 0 et commence à parcourir `line_buffer` jusqu'à ce qu'elle trouve un caractère de nouvelle ligne ('\n') ou un caractère de fin de chaîne ('\0'). Dans cet exemple, elle s'arrêterait à l'index 7, qui est le caractère de nouvelle ligne après "Bonjour".
+
+2. Elle vérifie si le caractère à l'index `i` est un caractère de fin de chaîne ou si la chaîne est vide. Si c'est le cas, elle retourne NULL. Dans cet exemple, ce n'est pas le cas, donc elle continue.
+
+3. Elle crée une sous-chaîne à partir de l'index du premier caractère de nouvelle ligne. Dans cet exemple, la sous-chaîne serait "Monde\n".
+
+4. Elle vérifie si la sous-chaîne est vide. Si c'est le cas, elle libère la mémoire et définit `left_c` sur NULL. Dans cet exemple, la sous-chaîne n'est pas vide, donc elle continue.
+
+5. Elle ajoute un caractère de fin de chaîne à la fin de la ligne dans `line_buffer`. Dans cet exemple, `line_buffer` deviendrait "Bonjour\0Monde\n".
+
+6. Finalement, elle retourne `left_c`, qui contient "Monde\n". Cette valeur sera utilisée comme entrée pour `_fill_line_buffer` lors du prochain appel à `get_next_line`, permettant ainsi de continuer la lecture à partir de l'endroit où elle s'était arrêtée.
+
